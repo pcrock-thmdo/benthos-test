@@ -1,0 +1,80 @@
+# created initial config template with:
+#
+#    benthos create stdin/command/stdout > config.yaml
+#
+
+http:
+  enabled: false
+  address: 0.0.0.0:4195
+  root_path: /benthos
+  debug_endpoints: false
+  cert_file: ""
+  key_file: ""
+  cors:
+    enabled: false
+    allowed_origins: []
+  basic_auth:
+    enabled: false
+    realm: restricted
+    username: ""
+    password_hash: ""
+    algorithm: sha256
+    salt: ""
+input:
+  label: ""
+  stdin:
+    codec: lines
+    max_buffer: 1000000
+buffer:
+  none: {}
+pipeline:
+  threads: -1
+  processors:
+
+    # https://www.benthos.dev/docs/components/processors/command
+    - label: "sketchy_echo"
+      command:
+        name: "bash"
+        args_mapping: '[ "-c", "scripts/sketchy-echo.sh" ]'
+
+    # https://www.benthos.dev/docs/components/processors/catch
+    - catch:
+      - command:
+          name: "bash"
+          args_mapping: '[ "-c", "scripts/report-error.sh" ]'
+output:
+  label: ""
+  stdout:
+    codec: lines
+logger:
+  level: INFO
+  format: logfmt
+  add_timestamp: false
+  level_name: level
+  timestamp_name: time
+  message_name: msg
+  static_fields:
+    '@service': benthos
+  file:
+    path: ""
+    rotate: false
+    rotate_max_age_days: 0
+metrics:
+  prometheus:
+    use_histogram_timing: false
+    histogram_buckets: []
+    summary_quantiles_objectives: []
+    add_process_metrics: false
+    add_go_metrics: false
+    push_url: ""
+    push_interval: ""
+    push_job_name: benthos_push
+    push_basic_auth:
+      username: ""
+      password: ""
+    file_output_path: ""
+  mapping: ""
+tracer:
+  none: {}
+shutdown_delay: ""
+shutdown_timeout: 20s
