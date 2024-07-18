@@ -1,6 +1,7 @@
 ## Benthos Test
 
-Experimenting with [Benthos](https://www.benthos.dev/) to see if it could be useful.
+Experimenting with <strike>[Benthos](https://www.benthos.dev/)</strike>
+[Redpanda Connect](https://github.com/redpanda-data/connect) to see if it could be useful.
 
 Right now all this config does is read stdin, feed it through a pipeline, and print the results to
 stdout. It also demonstrates error handling.
